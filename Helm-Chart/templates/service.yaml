@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.acceleration.name }}
+  namespace: {{ .Values.acceleration.namespace }}
+  labels: 
+    app: {{ .Values.acceleration.name }}
+spec:
+  type: {{ .Values.acceleration.service.type }}
+  ports:
+    - port: {{ .Values.acceleration.service.port }}       
+      targetPort: {{ .Values.acceleration.container.port }} 
+  selector:             
+    app: {{ .Values.acceleration.name }}

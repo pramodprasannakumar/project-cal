@@ -1,0 +1,30 @@
+{{- if .Values.acceleration.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    #nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+  name: {{ .Values.acceleration.ingress.name }}
+  namespace: {{ .Values.acceleration.namespace }}
+
+spec:
+  rules:
+  - http:
+      paths:
+      - backend:
+          service:
+            name: {{ .Values.acceleration.service.name }}
+            port: 
+              number: {{ .Values.acceleration.ports.webport }}
+        path: /health
+        pathType: Prefix
+      - backend:
+          service:
+            name: {{ .Values.acceleration.service.name }}
+            port: 
+              number: {{ .Values.acceleration.ports.webport }}
+        path: /calc
+        pathType: Prefix
+{{- end }}

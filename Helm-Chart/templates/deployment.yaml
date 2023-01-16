@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.acceleration.name }}
+  namespace: {{ .Values.acceleration.namespace }}
+  labels:
+    app: {{ .Values.acceleration.name }}
+spec:
+  replicas: {{ .Values.acceleration.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.acceleration.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.acceleration.name }}
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: {{ .Values.acceleration.name }}
+          image: {{ .Values.acceleration.container.image }}
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.acceleration.container.port }}
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.acceleration.container.port }}
+            initialDelaySeconds: 6
+            periodSeconds: 5
+          startupProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.acceleration.container.port }}
+            failureThreshold: 5
+            periodSeconds: 10
+          ports:
+            - containerPort: {{ .Values.acceleration.container.port }}
+          resources:
+            limits:
+              cpu: 200m
+              memory: 200Mi
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          {{- if .Values.acceleration.container.env }}
+          env:
+            {{- range $key, $value :=  .Values.acceleration.container.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+          {{- end}}
