@@ -1,8 +1,7 @@
 import * as http from 'http';
 import * as url from 'url';
 
-const port = process.env.WEB_PORT!;
-
+const port = process.env.WEB_PORT || 3002;
 const status = {
   fail: false,
 };
@@ -36,12 +35,10 @@ const server = http.createServer((req, res) => {
   }
 });
 
-server.listen(port, (err: Error) => {
-  if (err) {
-    return console.log('something bad happened', err);
-  }
-
+server.listen(port, () => {
   console.log(`server is listening on ${port}`);
+}).on('error', (err: Error) => {
+  console.log('something bad happened', err);
 });
 
 setTimeout(() => {

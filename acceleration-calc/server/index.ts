@@ -1,10 +1,15 @@
 import * as http from 'http';
 import * as request from 'request-promise-native';
 import * as url from 'url';
+require('dotenv').config({ path: '../.env' });
 
-const port = process.env.WEB_PORT!;
-const dvUrl = process.env.DV_URL!;
-const aUrl = process.env.A_URL!;
+const port = process.env.WEB_PORT;
+const dvUrl = process.env.DV_URL;
+const aUrl = process.env.A_URL;
+
+console.log('WEB_PORT:', process.env.WEB_PORT);
+console.log('DV_URL:', process.env.DV_URL);
+console.log('A_URL:', process.env.A_URL);
 
 const calc = async (query: any) => {
   const dvResult = await request.get(`${dvUrl}?vf=${query.vf}&vi=${query.vi}`);
@@ -43,10 +48,8 @@ const server = http.createServer((req, res) => {
   }
 });
 
-server.listen(port, (err: Error) => {
-  if (err) {
-    return console.log('something bad happened', err);
-  }
-
+server.listen(port, () => {
   console.log(`server is listening on ${port}`);
+}).on('error', (err: Error) => {
+  console.log('something bad happened', err);
 });

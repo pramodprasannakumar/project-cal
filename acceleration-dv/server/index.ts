@@ -35,12 +35,10 @@ const server = http.createServer((req, res) => {
   }
 });
 
-server.listen(port, (err: Error) => {
-  if (err) {
-    return console.log('something bad happened', err);
-  }
-
+server.listen(port, () => {
   console.log(`server is listening on ${port}`);
+}).on('error', (err: Error) => {
+  console.log('something bad happened', err);
 });
 
 setTimeout(() => {

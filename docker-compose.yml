@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  acceleration-a:
+    build: ./acceleration-a
+    ports:
+      - "3002:3002"
+    environment:
+      - WEB_PORT=3002
+      - A_URL=http://acceleration-a:3002/a
+
+  acceleration-dv:
+    build: ./acceleration-dv
+    ports:
+      - "3001:3001"
+    environment:
+      - WEB_PORT=3001
+
+  acceleration-calc:
+    build: ./acceleration-calc
+    ports:
+      - "3000:3000"
+    environment:
+      - WEB_PORT=3000
+      - DV_URL=http://acceleration-dv:3001/dv
+      - A_URL=http://acceleration-a:3002/a
+    depends_on:
+      - acceleration-dv
+      - acceleration-a
